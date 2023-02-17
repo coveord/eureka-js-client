@@ -68,8 +68,7 @@ export default class DnsClusterResolver {
       // if the cluster is the same (aside from order), we want to maintain our order
       if (xor(this.serverList, hosts).length) {
         this.serverList = hosts;
-        this.logger.info('Eureka cluster located, hosts will be used in the following order',
-          this.serverList);
+        this.logger.debug(`Eureka cluster located, ${this.serverList.length} hosts found`);
       } else {
         this.logger.debug('Eureka cluster hosts unchanged, maintaining current server list.');
       }

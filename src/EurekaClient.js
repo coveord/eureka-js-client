@@ -50,8 +50,6 @@ export default class Eureka extends EventEmitter {
     // Allow passing in a custom logger:
     this.logger = config.logger || new Logger();
 
-    this.logger.debug('initializing eureka client');
-
     // Load up the current working directory and the environment:
     const cwd = config.cwd || process.cwd();
     const env = process.env.EUREKA_ENV || process.env.NODE_ENV || 'development';
@@ -217,7 +215,7 @@ export default class Eureka extends EventEmitter {
       clearTimeout(connectionTimeout);
       if (!error && response.statusCode === 204) {
         this.logger.info(
-          'registered with eureka: ',
+          'Registered with eureka: ',
           `${this.config.instance.app}/${this.instanceId}`
         );
         this.emit('registered');
@@ -227,7 +225,7 @@ export default class Eureka extends EventEmitter {
         return callback(error);
       }
       return callback(
-        new Error(`eureka registration FAILED: status: ${response.statusCode} body: ${body}`)
+        new Error(`Eureka registration FAILED: status: ${response.statusCode} body: ${body}`)
       );
     });
   }
@@ -272,17 +270,17 @@ export default class Eureka extends EventEmitter {
       uri: `${this.config.instance.app}/${this.instanceId}`,
     }, (error, response, body) => {
       if (!error && response.statusCode === 200) {
-        this.logger.debug('eureka heartbeat success');
+        this.logger.debug('Eureka heartbeat success');
         this.emit('heartbeat');
       } else if (!error && response.statusCode === 404) {
-        this.logger.warn('eureka heartbeat FAILED, Re-registering app');
+        this.logger.warn('Eureka heartbeat FAILED, Re-registering app');
         this.register();
       } else {
         if (error) {
           this.logger.error('An error in the request occured.', error);
         }
         this.logger.warn(
-          'eureka heartbeat FAILED, will retry.' +
+          'Eureka heartbeat FAILED, will retry.' +
           `statusCode: ${response ? response.statusCode : 'unknown'}` +
           `body: ${body} ${error | ''} `
         );
@@ -352,7 +350,7 @@ export default class Eureka extends EventEmitter {
       },
     }, (error, response, body) => {
       if (!error && response.statusCode === 200) {
-        this.logger.debug('retrieved full registry successfully');
+        this.logger.debug('Retrieved full registry successfully');
         try {
           this.transformRegistry(JSON.parse(body));
         } catch (ex) {
@@ -380,7 +378,7 @@ export default class Eureka extends EventEmitter {
       },
     }, (error, response, body) => {
       if (!error && response.statusCode === 200) {
-        this.logger.debug('retrieved delta successfully');
+        this.logger.debug('Retrieved delta successfully');
         let applications;
         try {
           const jsonBody = JSON.parse(body);
