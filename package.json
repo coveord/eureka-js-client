@@ -1,6 +1,6 @@
 {
-  "name": "eureka-js-client",
-  "version": "4.5.0",
+  "name": "@coveord/eureka-js-client",
+  "version": "1.0.0",
   "description": "A JavaScript implementation the Netflix OSS service registry, Eureka.",
   "main": "lib/index.js",
   "scripts": {
@@ -21,10 +21,7 @@
   ],
   "author": "JQ",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/jquatier/eureka-js-client/issues"
-  },
-  "homepage": "https://github.com/jquatier/eureka-js-client",
+  "homepage": "https://github.com/coveord/eureka-js-client",
   "dependencies": {
     "async": "^2.0.1",
     "js-yaml": "^3.3.1",
