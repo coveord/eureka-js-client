@@ -9,7 +9,7 @@ export default {
     requestRetryDelay: 500,
     fetchRegistry: true,
     filterUpInstances: true,
-    servicePath: '/eureka/v2/apps/',
+    servicePath: '/eureka/apps/',
     ssl: false,
     useDns: false,
     preferSameZone: true,
@@ -18,6 +18,7 @@ export default {
     registerWithEureka: true,
     useLocalMetadata: false,
     preferIpAddress: false,
+    keepOriginalHostnameAndIpAddress: false,
   },
   instance: {},
 };

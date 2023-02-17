@@ -24,7 +24,7 @@ describe('Config Cluster Resolver', () => {
       resolver = new ConfigClusterResolver(makeConfig({
         eureka: {
           host: 'eureka.mydomain.com',
-          servicePath: '/eureka/v2/apps/',
+          servicePath: '/eureka/apps/',
           port: 9999,
         },
       }));
