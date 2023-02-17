@@ -1,6 +1,6 @@
 {
   "name": "@coveord/eureka-js-client",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A JavaScript implementation the Netflix OSS service registry, Eureka.",
   "main": "lib/index.js",
   "scripts": {
@@ -11,7 +11,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jquatier/eureka-js-client.git"
+    "url": "git+https://github.com/coveord/eureka-js-client.git"
+  },
+  "publishConfig": {
+    "registry":"https://npm.pkg.github.com/"
   },
   "keywords": [
     "eureka",
@@ -19,7 +22,6 @@
     "registry",
     "netflix"
   ],
-  "author": "JQ",
   "license": "MIT",
   "homepage": "https://github.com/coveord/eureka-js-client",
   "dependencies": {
