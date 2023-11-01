@@ -18,7 +18,7 @@ describe('Integration Test', () => {
       registryFetchInterval: 5000,
       fetchRegistry: true,
       waitForRegistry: true,
-      servicePath: '/eureka/v2/apps/',
+      servicePath: '/eureka/apps/',
       ssl: false,
       useDns: false,
       fetchMetadata: true,

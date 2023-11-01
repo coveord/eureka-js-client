@@ -161,7 +161,7 @@ const client = new Eureka({
     },
     serviceUrls: {
       'us-east-1c': [
-        'http://ec2-fake-552-627-568-165.compute-1.amazonaws.com:7001/eureka/v2/apps/', 'http://ec2-fake-368-101-182-134.compute-1.amazonaws.com:7001/eureka/v2/apps/'
+        'http://ec2-fake-552-627-568-165.compute-1.amazonaws.com:7001/eureka/apps/', 'http://ec2-fake-368-101-182-134.compute-1.amazonaws.com:7001/eureka/apps/'
       ],
       'us-east-1d': [...],
       'us-east-1e': [...]
@@ -181,7 +181,7 @@ const client = new Eureka({
   eureka: {
     serviceUrls: {
       default: [
-        'http://ec2-fake-552-627-568-165.compute-1.amazonaws.com:7001/eureka/v2/apps/', 'http://ec2-fake-368-101-182-134.compute-1.amazonaws.com:7001/eureka/v2/apps/'
+        'http://ec2-fake-552-627-568-165.compute-1.amazonaws.com:7001/eureka/apps/', 'http://ec2-fake-368-101-182-134.compute-1.amazonaws.com:7001/eureka/apps/'
       ]
     }
   },
@@ -283,7 +283,7 @@ If you are planning on connecting to a eureka service in AWS you will need to ad
 
 ### 404 Not Found Errors from Eureka Server
 
-This probably means that the Eureka REST service is located on a different path in your environment. The default is `http://<EUREKA_HOST>/eureka/v2/apps`, but depending on your setup you may need to set `eureka.servicePath` in your configuration to another path. The REST service could be hung under `/eureka/apps/` or possibly `/apps/`.
+This probably means that the Eureka REST service is located on a different path in your environment. The default is `http://<EUREKA_HOST>/eureka/apps`, but depending on your setup you may need to set `eureka.servicePath` in your configuration to another path. The REST service could be hung under `/eureka/apps/` or possibly `/apps/`.
 
 ### Usage with Spring Cloud
 

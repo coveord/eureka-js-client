@@ -4,7 +4,7 @@ eureka:
   heartbeatInterval: 999
   registryFetchInterval: 999
   fetchRegistry: false
-  servicePath: '/eureka/v2/apps/'
+  servicePath: '/eureka/apps/'
   ssl: false
   useDns: false
   fetchMetadata: false

@@ -390,7 +390,7 @@ describe('Eureka client', () => {
           },
         },
         json: true,
-        baseUrl: 'http://127.0.0.1:9999/eureka/v2/apps/',
+        baseUrl: 'http://127.0.0.1:9999/eureka/apps/',
         uri: 'app',
       });
 
@@ -442,7 +442,7 @@ describe('Eureka client', () => {
       client.deregister(deregisterCb);
 
       expect(request.delete).to.have.been.calledWithMatch({
-        baseUrl: 'http://127.0.0.1:9999/eureka/v2/apps/',
+        baseUrl: 'http://127.0.0.1:9999/eureka/apps/',
         uri: 'app/myhost',
       });
 
@@ -485,7 +485,7 @@ describe('Eureka client', () => {
       client.renew();
 
       expect(request.put).to.have.been.calledWithMatch({
-        baseUrl: 'http://127.0.0.1:9999/eureka/v2/apps/',
+        baseUrl: 'http://127.0.0.1:9999/eureka/apps/',
         uri: 'app/myhost',
       });
     });
@@ -505,7 +505,7 @@ describe('Eureka client', () => {
       client.renew();
 
       expect(request.put).to.have.been.calledWithMatch({
-        baseUrl: 'http://127.0.0.1:9999/eureka/v2/apps/',
+        baseUrl: 'http://127.0.0.1:9999/eureka/apps/',
         uri: 'app/myhost',
       });
 
@@ -521,7 +521,7 @@ describe('Eureka client', () => {
           },
         },
         json: true,
-        baseUrl: 'http://127.0.0.1:9999/eureka/v2/apps/',
+        baseUrl: 'http://127.0.0.1:9999/eureka/apps/',
         uri: 'app',
       });
     });
@@ -711,7 +711,7 @@ describe('Eureka client', () => {
       client.fetchRegistry(registryCb);
 
       expect(request.get).to.have.been.calledWithMatch({
-        baseUrl: 'http://127.0.0.1:9999/eureka/v2/apps/',
+        baseUrl: 'http://127.0.0.1:9999/eureka/apps/',
         uri: '',
         headers: { Accept: 'application/json' },
       });
@@ -727,7 +727,7 @@ describe('Eureka client', () => {
       client.fetchRegistry(registryCb);
 
       expect(request.get).to.have.been.calledWithMatch({
-        baseUrl: 'http://127.0.0.1:9999/eureka/v2/apps/',
+        baseUrl: 'http://127.0.0.1:9999/eureka/apps/',
         uri: 'delta',
         headers: { Accept: 'application/json' },
       });

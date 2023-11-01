@@ -32,7 +32,7 @@ describe('Config Cluster Resolver', () => {
 
     it('should return base Eureka URL using configured host', () => {
       resolver.resolveEurekaUrl((err, eurekaUrl) => {
-        expect(eurekaUrl).to.equal('http://eureka.mydomain.com:9999/eureka/v2/apps/');
+        expect(eurekaUrl).to.equal('http://eureka.mydomain.com:9999/eureka/apps/');
       });
     });
   });
@@ -44,9 +44,9 @@ describe('Config Cluster Resolver', () => {
         eureka: {
           serviceUrls: {
             default: [
-              'http://eureka1.mydomain.com:9999/eureka/v2/apps/',
-              'http://eureka2.mydomain.com:9999/eureka/v2/apps/',
-              'http://eureka3.mydomain.com:9999/eureka/v2/apps/',
+              'http://eureka1.mydomain.com:9999/eureka/apps/',
+              'http://eureka2.mydomain.com:9999/eureka/apps/',
+              'http://eureka3.mydomain.com:9999/eureka/apps/',
             ],
           },
         },
@@ -55,16 +55,16 @@ describe('Config Cluster Resolver', () => {
 
     it('should return first Eureka URL from configured serviceUrls', () => {
       resolver.resolveEurekaUrl((err, eurekaUrl) => {
-        expect(eurekaUrl).to.equal('http://eureka1.mydomain.com:9999/eureka/v2/apps/');
+        expect(eurekaUrl).to.equal('http://eureka1.mydomain.com:9999/eureka/apps/');
       });
     });
 
     it('should return next Eureka URL from configured serviceUrls', () => {
       resolver.resolveEurekaUrl((err, eurekaUrl) => {
-        expect(eurekaUrl).to.equal('http://eureka2.mydomain.com:9999/eureka/v2/apps/');
+        expect(eurekaUrl).to.equal('http://eureka2.mydomain.com:9999/eureka/apps/');
         // next attempt should still be the next server
         resolver.resolveEurekaUrl((errTwo, eurekaUrlTwo) => {
-          expect(eurekaUrlTwo).to.equal('http://eureka2.mydomain.com:9999/eureka/v2/apps/');
+          expect(eurekaUrlTwo).to.equal('http://eureka2.mydomain.com:9999/eureka/apps/');
         });
       }, 1);
     });
@@ -80,19 +80,19 @@ describe('Config Cluster Resolver', () => {
           },
           serviceUrls: {
             '1a': [
-              'http://1a-eureka1.mydomain.com:9999/eureka/v2/apps/',
-              'http://1a-eureka2.mydomain.com:9999/eureka/v2/apps/',
-              'http://1a-eureka3.mydomain.com:9999/eureka/v2/apps/',
+              'http://1a-eureka1.mydomain.com:9999/eureka/apps/',
+              'http://1a-eureka2.mydomain.com:9999/eureka/apps/',
+              'http://1a-eureka3.mydomain.com:9999/eureka/apps/',
             ],
             '1b': [
-              'http://1b-eureka1.mydomain.com:9999/eureka/v2/apps/',
-              'http://1b-eureka2.mydomain.com:9999/eureka/v2/apps/',
-              'http://1b-eureka3.mydomain.com:9999/eureka/v2/apps/',
+              'http://1b-eureka1.mydomain.com:9999/eureka/apps/',
+              'http://1b-eureka2.mydomain.com:9999/eureka/apps/',
+              'http://1b-eureka3.mydomain.com:9999/eureka/apps/',
             ],
             '1c': [
-              'http://1b-eureka1.mydomain.com:9999/eureka/v2/apps/',
-              'http://1b-eureka2.mydomain.com:9999/eureka/v2/apps/',
-              'http://1b-eureka3.mydomain.com:9999/eureka/v2/apps/',
+              'http://1b-eureka1.mydomain.com:9999/eureka/apps/',
+              'http://1b-eureka2.mydomain.com:9999/eureka/apps/',
+              'http://1b-eureka3.mydomain.com:9999/eureka/apps/',
             ],
           },
         },
@@ -101,7 +101,7 @@ describe('Config Cluster Resolver', () => {
 
     it('should return first Eureka URL from configured serviceUrls', () => {
       resolver.resolveEurekaUrl((err, eurekaUrl) => {
-        expect(eurekaUrl).to.equal('http://1a-eureka1.mydomain.com:9999/eureka/v2/apps/');
+        expect(eurekaUrl).to.equal('http://1a-eureka1.mydomain.com:9999/eureka/apps/');
       });
     });
   });
@@ -117,19 +117,19 @@ describe('Config Cluster Resolver', () => {
           },
           serviceUrls: {
             '1a': [
-              'http://1a-eureka1.mydomain.com:9999/eureka/v2/apps/',
-              'http://1a-eureka2.mydomain.com:9999/eureka/v2/apps/',
-              'http://1a-eureka3.mydomain.com:9999/eureka/v2/apps/',
+              'http://1a-eureka1.mydomain.com:9999/eureka/apps/',
+              'http://1a-eureka2.mydomain.com:9999/eureka/apps/',
+              'http://1a-eureka3.mydomain.com:9999/eureka/apps/',
             ],
             '1b': [
-              'http://1b-eureka1.mydomain.com:9999/eureka/v2/apps/',
-              'http://1b-eureka2.mydomain.com:9999/eureka/v2/apps/',
-              'http://1b-eureka3.mydomain.com:9999/eureka/v2/apps/',
+              'http://1b-eureka1.mydomain.com:9999/eureka/apps/',
+              'http://1b-eureka2.mydomain.com:9999/eureka/apps/',
+              'http://1b-eureka3.mydomain.com:9999/eureka/apps/',
             ],
             '1c': [
-              'http://1b-eureka1.mydomain.com:9999/eureka/v2/apps/',
-              'http://1b-eureka2.mydomain.com:9999/eureka/v2/apps/',
-              'http://1b-eureka3.mydomain.com:9999/eureka/v2/apps/',
+              'http://1b-eureka1.mydomain.com:9999/eureka/apps/',
+              'http://1b-eureka2.mydomain.com:9999/eureka/apps/',
+              'http://1b-eureka3.mydomain.com:9999/eureka/apps/',
             ],
           },
         },
@@ -138,7 +138,7 @@ describe('Config Cluster Resolver', () => {
 
     it('should return first Eureka URL from configured serviceUrls', () => {
       resolver.resolveEurekaUrl((err, eurekaUrl) => {
-        expect(eurekaUrl).to.equal('http://1b-eureka1.mydomain.com:9999/eureka/v2/apps/');
+        expect(eurekaUrl).to.equal('http://1b-eureka1.mydomain.com:9999/eureka/apps/');
       });
     });
   });
@@ -156,19 +156,19 @@ describe('Config Cluster Resolver', () => {
         },
         serviceUrls: {
           '1a': [
-            'http://1a-eureka1.mydomain.com:9999/eureka/v2/apps/',
-            'http://1a-eureka2.mydomain.com:9999/eureka/v2/apps/',
-            'http://1a-eureka3.mydomain.com:9999/eureka/v2/apps/',
+            'http://1a-eureka1.mydomain.com:9999/eureka/apps/',
+            'http://1a-eureka2.mydomain.com:9999/eureka/apps/',
+            'http://1a-eureka3.mydomain.com:9999/eureka/apps/',
           ],
           '1b': [
-            'http://1b-eureka1.mydomain.com:9999/eureka/v2/apps/',
-            'http://1b-eureka2.mydomain.com:9999/eureka/v2/apps/',
-            'http://1b-eureka3.mydomain.com:9999/eureka/v2/apps/',
+            'http://1b-eureka1.mydomain.com:9999/eureka/apps/',
+            'http://1b-eureka2.mydomain.com:9999/eureka/apps/',
+            'http://1b-eureka3.mydomain.com:9999/eureka/apps/',
           ],
           '1c': [
-            'http://1b-eureka1.mydomain.com:9999/eureka/v2/apps/',
-            'http://1b-eureka2.mydomain.com:9999/eureka/v2/apps/',
-            'http://1b-eureka3.mydomain.com:9999/eureka/v2/apps/',
+            'http://1b-eureka1.mydomain.com:9999/eureka/apps/',
+            'http://1b-eureka2.mydomain.com:9999/eureka/apps/',
+            'http://1b-eureka3.mydomain.com:9999/eureka/apps/',
           ],
         },
       },
@@ -179,7 +179,7 @@ describe('Config Cluster Resolver', () => {
 
     it('should return first Eureka URL from configured serviceUrls', () => {
       resolver.resolveEurekaUrl((err, eurekaUrl) => {
-        expect(eurekaUrl).to.equal('http://1a-eureka1.mydomain.com:9999/eureka/v2/apps/');
+        expect(eurekaUrl).to.equal('http://1a-eureka1.mydomain.com:9999/eureka/apps/');
       });
     });
   });

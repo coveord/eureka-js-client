@@ -16,7 +16,7 @@ function makeConfig(overrides = {}) {
     },
     eureka: {
       host: 'eureka.mydomain.com',
-      servicePath: '/eureka/v2/apps/',
+      servicePath: '/eureka/apps/',
       port: 9999,
       maxRetries: 0,
       ec2Region: 'my-region',
@@ -90,7 +90,7 @@ describe('DNS Cluster Resolver', () => {
       const resolveHostsStub = sinon.stub(dnsResolver, 'resolveClusterHosts');
       resolveHostsStub.yields(null, ['a.mydomain.com', 'b.mydomain.com', 'c.mydomain.com']);
       dnsResolver.resolveEurekaUrl((err, eurekaUrl) => {
-        expect(eurekaUrl).to.equal('http://a.mydomain.com:9999/eureka/v2/apps/');
+        expect(eurekaUrl).to.equal('http://a.mydomain.com:9999/eureka/apps/');
       });
     });
 
@@ -98,7 +98,7 @@ describe('DNS Cluster Resolver', () => {
       const resolveHostsStub = sinon.stub(dnsResolver, 'resolveClusterHosts');
       resolveHostsStub.yields(null, ['a.mydomain.com', 'b.mydomain.com', 'c.mydomain.com']);
       dnsResolver.resolveEurekaUrl((err, eurekaUrl) => {
-        expect(eurekaUrl).to.equal('http://b.mydomain.com:9999/eureka/v2/apps/');
+        expect(eurekaUrl).to.equal('http://b.mydomain.com:9999/eureka/apps/');
         expect(dnsResolver.serverList).to.eql(['b.mydomain.com', 'c.mydomain.com',
           'a.mydomain.com']);
       }, 1);
@@ -244,7 +244,7 @@ describe('DNS Cluster Resolver', () => {
         eureka: {
           preferSameZone: true,
           host: 'eureka.mydomain.com',
-          servicePath: '/eureka/v2/apps/',
+          servicePath: '/eureka/apps/',
           port: 9999,
           maxRetries: 0,
           ec2Region: 'my-region',
