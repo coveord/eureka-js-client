@@ -174,6 +174,28 @@ export default class Eureka extends EventEmitter {
     }
   }
 
+  setStatus(status, callback = noop) {
+    this.eurekaRequest({
+      method: 'PUT',
+      uri: `${this.config.instance.app}/${this.instanceId}/status?value=${encodeURIComponent(status)}`,
+    }, (error, response, body) => {
+      if (!error && response.statusCode === 200) {
+        this.logger.info(
+          `updated status in Eureka to '${status}': ${this.config.instance.app}/${this.instanceId}`,
+        );
+        this.emit('status');
+        return callback(null);
+      } else if (error) {
+        this.logger.warn('Error updating status with eureka', error);
+        return callback(error);
+      } else {
+        return callback(
+          new Error(`updating status in Eureka FAILED: status: ${response.statusCode} body: ${body}`),
+        );
+      }
+    });
+  }
+
   /*
     Validates client configuration.
   */
@@ -200,7 +222,7 @@ export default class Eureka extends EventEmitter {
     Registers with the Eureka server and initializes heartbeats on registration success.
   */
   register(callback = noop) {
-    this.config.instance.status = 'UP';
+    this.config.instance.status = 'STARTING';
     const connectionTimeout = setTimeout(() => {
       this.logger.warn('It looks like it\'s taking a while to register with ' +
         'Eureka. This usually means there is an issue connecting to the host ' +
@@ -225,7 +247,7 @@ export default class Eureka extends EventEmitter {
         return callback(error);
       }
       return callback(
-        new Error(`Eureka registration FAILED: status: ${response.statusCode} body: ${body}`)
+        new Error(`Eureka registration FAILED: status: ${response.statusCode} body: ${JSON.stringify(body)}`)
       );
     });
   }
@@ -367,9 +389,9 @@ export default class Eureka extends EventEmitter {
     });
   }
 
-    /*
-    Retrieves all applications registered with the Eureka server
-   */
+  /*
+  Retrieves all applications registered with the Eureka server
+ */
   fetchDelta(callback = noop) {
     this.eurekaRequest({
       uri: 'delta',
@@ -564,63 +586,63 @@ export default class Eureka extends EventEmitter {
   */
   eurekaRequest(opts, callback, retryAttempt = 0) {
     waterfall([
-      /*
-      Resolve Eureka Clusters
-      */
-      done => {
-        this.clusterResolver.resolveEurekaUrl((err, eurekaUrl) => {
-          if (err) return done(err);
-          const requestOpts = merge({}, opts, {
-            baseUrl: eurekaUrl,
-            gzip: true,
+        /*
+        Resolve Eureka Clusters
+        */
+        done => {
+          this.clusterResolver.resolveEurekaUrl((err, eurekaUrl) => {
+            if (err) return done(err);
+            const requestOpts = merge({}, opts, {
+              baseUrl: eurekaUrl,
+              gzip: true,
+            });
+            done(null, requestOpts);
+          }, retryAttempt);
+        },
+        /*
+        Apply Request Middleware
+        */
+        (requestOpts, done) => {
+          this.requestMiddleware(requestOpts, (newRequestOpts) => {
+            if (typeof newRequestOpts !== 'object') {
+              return done(new Error('requestMiddleware did not return an object'));
+            }
+            done(null, newRequestOpts);
           });
-          done(null, requestOpts);
-        }, retryAttempt);
-      },
+        },
+        /*
+        Perform Request
+         */
+        (requestOpts, done) => {
+          const method = requestOpts.method ? requestOpts.method.toLowerCase() : 'get';
+          request[method](requestOpts, (error, response, body) => {
+            done(error, response, body, requestOpts);
+          });
+        },
+      ],
       /*
-      Apply Request Middleware
-      */
-      (requestOpts, done) => {
-        this.requestMiddleware(requestOpts, (newRequestOpts) => {
-          if (typeof newRequestOpts !== 'object') {
-            return done(new Error('requestMiddleware did not return an object'));
-          }
-          done(null, newRequestOpts);
-        });
-      },
-      /*
-      Perform Request
+      Handle Final Output.
        */
-      (requestOpts, done) => {
-        const method = requestOpts.method ? requestOpts.method.toLowerCase() : 'get';
-        request[method](requestOpts, (error, response, body) => {
-          done(error, response, body, requestOpts);
-        });
-      },
-    ],
-    /*
-    Handle Final Output.
-     */
-    (error, response, body, requestOpts) => {
-      if (error) this.logger.error('Problem making eureka request', error);
+      (error, response, body, requestOpts) => {
+        if (error) this.logger.error('Problem making eureka request', error);
 
-      // Perform retry if request failed and we have attempts left
-      const responseInvalid = response
-        && response.statusCode
-        && String(response.statusCode)[0] === '5';
+        // Perform retry if request failed and we have attempts left
+        const responseInvalid = response
+          && response.statusCode
+          && String(response.statusCode)[0] === '5';
 
-      if ((error || responseInvalid) && retryAttempt < this.config.eureka.maxRetries) {
-        const nextRetryDelay = this.config.eureka.requestRetryDelay * (retryAttempt + 1);
-        this.logger.warn(`Eureka request failed to endpoint ${requestOpts.baseUrl}, ` +
-          `next server retry in ${nextRetryDelay}ms`);
+        if ((error || responseInvalid) && retryAttempt < this.config.eureka.maxRetries) {
+          const nextRetryDelay = this.config.eureka.requestRetryDelay * (retryAttempt + 1);
+          this.logger.warn(`Eureka request failed to endpoint ${requestOpts.baseUrl}, ` +
+            `next server retry in ${nextRetryDelay}ms`);
 
-        setTimeout(() => this.eurekaRequest(opts, callback, retryAttempt + 1),
-          nextRetryDelay);
-        return;
-      }
+          setTimeout(() => this.eurekaRequest(opts, callback, retryAttempt + 1),
+            nextRetryDelay);
+          return;
+        }
 
-      callback(error, response, body);
-    });
+        callback(error, response, body);
+      });
   }
 
 }

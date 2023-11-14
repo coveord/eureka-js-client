@@ -9,6 +9,7 @@ export class Eureka {
     constructor(config: EurekaClient.EurekaConfig | EurekaClient.EurekaYmlConfig | EurekaClient.EurekaMiddlewareConfig);
     start(cb?: (err: Error, ...rest: any[]) => void): void;
     stop(cb?: (err: Error, ...rest: any[]) => void): void;
+    setStatus(status: EurekaClient.InstanceStatus, cb?: (err: Error, ...rest: any[]) => void): void;
     getInstancesByAppId(appId: string): EurekaClient.EurekaInstanceConfig[];
     getInstancesByVipAddress(vidAddress: string): EurekaClient.EurekaInstanceConfig[];
 }
@@ -47,7 +48,7 @@ export namespace EurekaClient {
         secureHealthCheckUrl?: string | undefined;
         secureVipAddress?: string | undefined;
         countryId?: number | undefined;
-        status?: InstanceStatus | undefined;
+        status: InstanceStatus;
         overriddenstatus?: InstanceStatus | undefined;
         leaseInfo?: LeaseInfo | undefined;
         isCoordinatingDiscoveryServer?: boolean | undefined;
