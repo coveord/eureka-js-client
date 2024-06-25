@@ -128,15 +128,14 @@ export default class DnsClusterResolver {
   }
 
   patchedResolveTxt(domain, callback) {
-    debugger;
     dns.resolveTxt(domain, (err, results) => {
       if (err) {
         callback(err);
       }
 
       // Fix for this Node regression: https://github.com/nodejs/node/issues/52053
-      if (results.length === 1) {
-        return results[0].split(/(?<=\.com)(?=us-)/);
+      if (results.length === 1 && results[0].length === 1) {
+        return [results[0][0].split(/(?<=\.com)(?=us-)/)];
       }
 
       return results;
