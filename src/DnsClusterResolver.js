@@ -82,7 +82,7 @@ export default class DnsClusterResolver {
     const metadata = dataCenterInfo ? dataCenterInfo.metadata : undefined;
     const availabilityZone = metadata ? metadata['availability-zone'] : undefined;
     const dnsHost = `txt.${ec2Region}.${host}`;
-    dns.resolveTxt(dnsHost, (err, addresses) => {
+    this.patchedResolveTxt(dnsHost, (err, addresses) => {
       if (err) {
         return callback(new Error(
           `Error resolving eureka cluster for region [${ec2Region}] using DNS: [${err}]`
@@ -117,7 +117,7 @@ export default class DnsClusterResolver {
   }
 
   resolveZoneHosts(zoneRecord, callback) {
-    dns.resolveTxt(zoneRecord, (err, results) => {
+    this.patchedResolveTxt(zoneRecord, (err, results) => {
       if (err) {
         this.logger.warn(`Failed to resolve cluster zone ${zoneRecord}`, err.message);
         return callback(new Error(`Error resolving cluster zone ${zoneRecord}: [${err}]`));
@@ -125,5 +125,21 @@ export default class DnsClusterResolver {
       this.logger.debug(`Found Eureka Servers @ ${zoneRecord}`, results);
       callback(null, ([].concat(...results)).filter((value) => (!!value)));
     });
+  }
+
+  patchedResolveTxt(domain, callback) {
+    debugger;
+    dns.resolveTxt(domain, (err, results) => {
+      if (err) {
+        callback(err);
+      }
+
+      // Fix for this Node regression: https://github.com/nodejs/node/issues/52053
+      if (results.length === 1) {
+        return results[0].split(/(?<=\.com)(?=us-)/);
+      }
+
+      return results;
+    })
   }
 }
