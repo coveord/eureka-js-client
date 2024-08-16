@@ -135,10 +135,11 @@ export default class DnsClusterResolver {
 
       // Fix for this Node regression: https://github.com/nodejs/node/issues/52053
       if (results.length === 1 && results[0].length === 1) {
-        return [results[0][0].split(/(?<=\.com)(?=us-)/)];
+        callback(null, [results[0][0].split(/(?<=\.com)(?=us-)/)]);
+        return;
       }
 
-      return results;
+      callback(null, results);
     })
   }
 }
