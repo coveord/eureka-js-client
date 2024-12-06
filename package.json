@@ -1,6 +1,6 @@
 {
   "name": "@coveo-platform/eureka-js-client",
-  "version": "1.2.4",
+  "version": "1.2.5",
   "description": "A JavaScript implementation the Netflix OSS service registry, Eureka.",
   "main": "lib/index.js",
   "repository": {
@@ -10,7 +10,7 @@
   "license": "MIT",
   "scripts": {
     "prepublish": "npm run build",
-    "build": "rollup src/index.js --file lib/index.js --format cjs --configPlugin @rollup/plugin-node-resolve"
+    "build": "rollup -c"
   },
   "dependencies": {
     "async": "^3.2.4",
@@ -19,6 +19,8 @@
     "request": "^2.88.2"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.3.0",
     "chai": "^3.2.0",
     "rollup": "^4.28.0",
