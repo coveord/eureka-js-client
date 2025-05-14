@@ -183,7 +183,8 @@ export default class Eureka extends EventEmitter {
         this.logger.info(
           `updated status in Eureka to '${status}': ${this.config.instance.app}/${this.instanceId}`,
         );
-        this.emit('status');
+          this.lastStatus = status;
+          this.emit('status');
         return callback(null);
       } else if (error) {
         this.logger.warn('Error updating status with eureka', error);
@@ -241,6 +242,12 @@ export default class Eureka extends EventEmitter {
           `${this.config.instance.app}/${this.instanceId}`
         );
         this.emit('registered');
+
+        if (this.lastStatus) {
+          this.logger.info(`Restoring status to ${this.lastStatus}`);
+          this.setStatus(this.lastStatus);
+        }
+
         return callback(null);
       } else if (error) {
         this.logger.warn('Error registering with eureka client.', error);
