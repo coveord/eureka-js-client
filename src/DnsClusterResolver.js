@@ -1,10 +1,10 @@
-import dns from 'dns';
 import async from 'async';
+import dns from 'dns';
 import shuffle from 'lodash/shuffle';
 import xor from 'lodash/xor';
 import Logger from './Logger';
 
-function noop() {}
+function noop() { }
 
 /*
   Locates a Eureka host using DNS lookups. The DNS records are looked up by a naming
@@ -130,7 +130,7 @@ export default class DnsClusterResolver {
   patchedResolveTxt(domain, callback) {
     dns.resolveTxt(domain, (err, results) => {
       if (err) {
-        callback(err);
+        return callback(err);
       }
 
       // Fix for this Node regression: https://github.com/nodejs/node/issues/52053

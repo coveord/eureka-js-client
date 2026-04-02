@@ -1,11 +1,11 @@
-import request from 'request';
-import fs from 'fs';
-import yaml from 'js-yaml';
-import { merge, findIndex } from 'lodash';
-import { normalizeDelta, findInstance } from './deltaUtils';
-import path from 'path';
 import { series, waterfall } from 'async';
 import { EventEmitter } from 'events';
+import fs from 'fs';
+import yaml from 'js-yaml';
+import { findIndex, merge } from 'lodash';
+import path from 'path';
+import request from 'request';
+import { findInstance, normalizeDelta } from './deltaUtils';
 
 import AwsMetadata from './AwsMetadata';
 import ConfigClusterResolver from './ConfigClusterResolver';
@@ -13,7 +13,7 @@ import DnsClusterResolver from './DnsClusterResolver';
 import Logger from './Logger';
 import defaultConfig from './defaultConfig';
 
-function noop() {}
+function noop() { }
 
 /*
   Eureka JS client
@@ -183,8 +183,8 @@ export default class Eureka extends EventEmitter {
         this.logger.info(
           `updated status in Eureka to '${status}': ${this.config.instance.app}/${this.instanceId}`,
         );
-          this.lastStatus = status;
-          this.emit('status');
+        this.lastStatus = status;
+        this.emit('status');
         return callback(null);
       } else if (error) {
         this.logger.warn('Error updating status with eureka', error);
@@ -592,45 +592,48 @@ export default class Eureka extends EventEmitter {
     the current cluster as well as some default options.
   */
   eurekaRequest(opts, callback, retryAttempt = 0) {
+    let resolvedOpts;
     waterfall([
-        /*
-        Resolve Eureka Clusters
-        */
-        done => {
-          this.clusterResolver.resolveEurekaUrl((err, eurekaUrl) => {
-            if (err) return done(err);
-            const requestOpts = merge({}, opts, {
-              baseUrl: eurekaUrl,
-              gzip: true,
-            });
-            done(null, requestOpts);
-          }, retryAttempt);
-        },
-        /*
-        Apply Request Middleware
-        */
-        (requestOpts, done) => {
-          this.requestMiddleware(requestOpts, (newRequestOpts) => {
-            if (typeof newRequestOpts !== 'object') {
-              return done(new Error('requestMiddleware did not return an object'));
-            }
-            done(null, newRequestOpts);
+      /*
+      Resolve Eureka Clusters
+      */
+      done => {
+        this.clusterResolver.resolveEurekaUrl((err, eurekaUrl) => {
+          if (err) return done(err);
+          resolvedOpts = merge({}, opts, {
+            baseUrl: eurekaUrl,
+            gzip: true,
           });
-        },
-        /*
-        Perform Request
-         */
-        (requestOpts, done) => {
-          const method = requestOpts.method ? requestOpts.method.toLowerCase() : 'get';
-          request[method](requestOpts, (error, response, body) => {
-            done(error, response, body, requestOpts);
-          });
-        },
-      ],
+          done(null, resolvedOpts);
+        }, retryAttempt);
+      },
+      /*
+      Apply Request Middleware
+      */
+      (requestOpts, done) => {
+        this.requestMiddleware(requestOpts, (newRequestOpts) => {
+          if (typeof newRequestOpts !== 'object') {
+            return done(new Error('requestMiddleware did not return an object'));
+          }
+          resolvedOpts = newRequestOpts;
+          done(null, newRequestOpts);
+        });
+      },
+      /*
+      Perform Request
+       */
+      (requestOpts, done) => {
+        const method = requestOpts.method ? requestOpts.method.toLowerCase() : 'get';
+        request[method](requestOpts, (error, response, body) => {
+          done(error, response, body, requestOpts);
+        });
+      },
+    ],
       /*
       Handle Final Output.
        */
       (error, response, body, requestOpts) => {
+        requestOpts = requestOpts || resolvedOpts;
         if (error) this.logger.error('Problem making eureka request', error);
 
         // Perform retry if request failed and we have attempts left
@@ -640,7 +643,7 @@ export default class Eureka extends EventEmitter {
 
         if ((error || responseInvalid) && retryAttempt < this.config.eureka.maxRetries) {
           const nextRetryDelay = this.config.eureka.requestRetryDelay * (retryAttempt + 1);
-          this.logger.warn(`Eureka request failed to endpoint ${requestOpts.baseUrl}, ` +
+          this.logger.warn(`Eureka request failed to endpoint ${requestOpts?.baseUrl ?? 'unknown'}, ` +
             `next server retry in ${nextRetryDelay}ms`);
 
           setTimeout(() => this.eurekaRequest(opts, callback, retryAttempt + 1),
